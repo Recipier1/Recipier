@@ -4,7 +4,7 @@ beautifulsoup4==4.13.3
 lxml==5.3.0
 
 # --- RAG & Vector Database ---
-chromadb==0.6.3
+chromadb>=0.5.20
 python-dotenv==1.0.1
 rank_bm25==0.2.2
 

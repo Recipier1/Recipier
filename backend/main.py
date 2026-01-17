@@ -2,14 +2,22 @@ from pdb import run
 from scraper.WebScraper import WebScraper
 from scraper.AllRecipesWebCrawler import AllRecipesCrawler, WebCrawler
 from scraper.RecipeTransformer import RecipeTransformer
-import chromadb
+from .database import get_chromadb_client
 
 
 def run_recipe_pipeline(seed_url, max_recipes=5):
     # init tools
     crawler = AllRecipesCrawler(delay=1.0)
     scraper = WebScraper()
-    client = chromadb.PersistentClient(path="./recipe_db")
+    client = get_chromadb_client()
+    # Delete existing collection if it exists
+    try:
+        client.delete_collection(name="recipes")
+        print("🗑️  Deleted existing 'recipes' collection")
+    except Exception as e:
+        print(f"ℹ️  No existing collection to delete (or error: {e})")
+
+    # Create fresh collection
     collection = client.get_or_create_collection(name="recipes")
     # client.delete_collection(name="recipes")
 
@@ -41,7 +49,7 @@ def run_recipe_pipeline(seed_url, max_recipes=5):
 
         except Exception as e:
             print(
-                f"⚠️ Skipping {url} - possibly not a recipe page. Error: {e}")
+                f" Skipping {url} - possibly not a recipe page. Error: {e}")
 
     print("\n✨ Ingestion Complete! Your RAG database is ready.")
     results = collection.query(
