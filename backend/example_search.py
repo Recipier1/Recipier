@@ -139,7 +139,7 @@ def demo_quick_functions():
     print("\n🤖 Using quick_ask():")
     answer = quick_ask("What's a simple pasta recipe?", top_k=5)
     if "error" not in answer.lower() or "not configured" not in answer.lower():
-        print(f"  {answer[:200]}...")
+        print(f"  {answer[:50]}...")
     else:
         print(f"  (Skipped - {answer})")
 

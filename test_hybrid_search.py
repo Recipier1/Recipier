@@ -176,7 +176,7 @@ def test_llm_integration(has_openai):
         print(f"📊 Used {result.get('tokens_used', 'unknown')} tokens")
         print(f"📚 Based on {len(result['sources']['documents'])} recipe chunks")
         print(f"\n💬 Response preview:")
-        print(f"   {result['answer'][:200]}...")
+        print(f"   {result['answer'][:50]}...")
         
         return True
     

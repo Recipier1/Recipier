@@ -16,26 +16,28 @@ def run_recipe_pipeline(seed_url, max_recipes=5, debug=False):
 
     # Determine if seed URL is a recipe page (leaf node)
     is_recipe_page = '/recipe/' in seed_url.lower() or '-recipe-' in seed_url.lower()
-    
+
     # Set fallback URL to a category page if starting from a recipe page
     fallback_url = None
     if is_recipe_page:
         fallback_url = "https://www.allrecipes.com/recipes/"
-        print(f"📌 Starting from recipe page. Fallback URL set to: {fallback_url}")
-    
+        print(
+            f"📌 Starting from recipe page. Fallback URL set to: {fallback_url}")
+
     # Crawl pages (includes both recipes and category pages)
     # But we want to scrape MORE than max_recipes pages to find enough recipes
-    crawl_results = crawler.crawl(seed_url, max_pages=max_recipes * 5)
+    crawl_results = crawler.crawl(seed_url, max_pages=max_recipes)
 
     # Filter to only actual recipe pages (not category pages)
-    recipe_urls = {url: info for url, info in crawl_results.items() 
+    recipe_urls = {url: info for url, info in crawl_results.items()
                    if '/recipe/' in url.lower()}
-    
-    print(f"\n🎯 Found {len(recipe_urls)} recipe pages out of {len(crawl_results)} crawled pages")
-    
+
+    print(
+        f"\n🎯 Found {len(recipe_urls)} recipe pages out of {len(crawl_results)} crawled pages")
+
     # Limit to max_recipes
     recipe_urls = dict(list(recipe_urls.items())[:max_recipes])
-    
+
     for url, info in recipe_urls.items():
         print(f"📖 Scraping recipe: {info['title']}")
 
@@ -71,44 +73,32 @@ def run_recipe_pipeline(seed_url, max_recipes=5, debug=False):
     # )
 
     searcher = HybridRecipeSearch()
-    
+
     # Test search
     query = "seaweed"
     results = searcher.hybrid_search(query, top_k=3)
-    
+
     # Display results
     for i, doc in enumerate(results['documents'], 1):
         metadata = results['metadatas'][i-1]
         score = results['scores'][i-1]
         recipe = metadata.get('recipe', 'Unknown')
         chunk_type = metadata.get('type', 'unknown')
-        
+
         print(f"\n  {i}. [{chunk_type}] {recipe}")
         print(f"     Score: {score:.4f}")
         print(f"     Preview: {doc[:80]}...")
-    
 
     print("queried:")
     print(results)
 
     print(searcher.search_and_generate(
-        query="Seaweed", 
+        query="",
     ))
 
 
 if __name__ == "__main__":
-    # Better seed URLs - use category pages for better discovery
-    # Option 1: Category page (recommended - best for discovering many recipes)
-    START_URL = "https://www.allrecipes.com/recipe/279548/dalgona-coffee-whipped-coffee/"
-    
-    # Option 2: Specific category
-    # START_URL = "https://www.allrecipes.com/recipes/76/appetizers-and-snacks/"
-    
-    # Option 3: Homepage
-    # START_URL = "https://www.allrecipes.com"
-    
-    # Option 4: Recipe page (will use fallback to category page if queue empties)
-    # START_URL = "https://www.allrecipes.com/peanut-butter-and-jelly-french-toast-casserole-recipe-7371603"
-    
+    START_URL = "https://www.allrecipes.com/recipes/698/world-cuisine/asian/indonesian/"
+
     # Enable debug mode to see link discovery details
-    run_recipe_pipeline(START_URL, max_recipes=10)
+    run_recipe_pipeline(START_URL, max_recipes=1000)

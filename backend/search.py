@@ -79,7 +79,7 @@ class HybridRecipeSearch:
         top_k: int = 10,
         semantic_weight: float = 0.7,
         keyword_weight: float = 0.3,
-        candidate_pool: int = 200
+        candidate_pool: int = 50
     ) -> dict:
         """
         Perform hybrid search combining semantic and keyword matching.
@@ -103,7 +103,7 @@ class HybridRecipeSearch:
         self._ensure_bm25_index()
         
         # Step 1: Semantic search (fast vector lookup)
-        candidate_pool = min(candidate_pool, max(top_k * 20, 200))
+        candidate_pool = min(candidate_pool, max(top_k * 10, 50))
         
         print(f"🔍 Semantic search: retrieving top {candidate_pool} candidates...")
         semantic_results = self.collection.query(
@@ -172,7 +172,7 @@ class HybridRecipeSearch:
         top_k: int = 10,
         model: str = "gpt-4o-mini",
         temperature: float = 0.7,
-        max_tokens: int = 1000
+        max_tokens: int = 3000  # Increased from 1000 to allow longer responses
     ) -> dict:
         """
         Perform hybrid search and generate answer using LLM.
