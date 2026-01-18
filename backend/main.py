@@ -98,7 +98,7 @@ def run_recipe_pipeline(seed_url, max_recipes=5, debug=False):
 
 
 if __name__ == "__main__":
-    START_URL = "https://www.allrecipes.com/recipes/698/world-cuisine/asian/indonesian/"
+    START_URL = "https://www.allrecipes.com/recipe/162845/chinese-tomato-and-egg/"
 
     # Enable debug mode to see link discovery details
-    run_recipe_pipeline(START_URL, max_recipes=1)
+    run_recipe_pipeline(START_URL, max_recipes=200)
